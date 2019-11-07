@@ -2,7 +2,7 @@
   <div class="header-wrap">
     <Menu mode="horizontal" theme="dark" :active-name="activeName">
       <div class="layout-logo fl"></div>
-      <div class="layout-nav fl">
+      <div class="layout-nav fl" v-if="isHomePage">
         <MenuItem name="new" :to="{ path: '/home/new' }">
           <Icon type="ios-navigate"></Icon>
           最新发布
@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       offset: [25, 45],
-      activeName: this.$route.params.id || 'new'
+      activeName: this.$route.params.type || 'new'
     }
   },
   computed: {

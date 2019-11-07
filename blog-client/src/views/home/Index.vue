@@ -1,11 +1,8 @@
 <template>
   <Scroll
-    height="100%"
-    :distance-to-edge="distance"
     :on-reach-bottom="handleReachBottom">
-  <!-- <div> -->
     <blog-header />
-    <div class="list-wrap">
+    <div class="home-list-wrap box-shadow bg-color">
       <List item-layout="vertical">
         <ListItem v-for="(item, index) in dataList" :key="index">
             <ListItemMeta :avatar="item.avatar" :title="item.title" :description="item.description" />
@@ -27,7 +24,7 @@
         </ListItem>
       </List>
     </div>
-  <!-- </div> -->
+    <BackTop></BackTop>
   </Scroll>
 </template>
 
@@ -35,15 +32,14 @@
 import {
   List,
   Icon,
-  Scroll
+  Scroll,
+  BackTop
 } from 'view-design'
 import BlogHeader from '@/components/BlogHeader'
 
 export default {
   data() {
     return {
-      distance: [-10, -20],
-      scrollHeight: '100%',
       dataList: [
         {
           title: 'This is title 1',
@@ -80,7 +76,8 @@ export default {
     ListItem: List.Item,
     ListItemMeta: List.Item.Meta,
     Icon,
-    Scroll
+    Scroll,
+    BackTop
   },
   computed: {},
   methods: {
@@ -104,14 +101,18 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.list-wrap {
+<style lang="less">
+.ivu-scroll-container {
+  height: 100% !important;
+  .ivu-scroll-loader:first-child {
+    display: none !important;
+  }
+}
+.home-list-wrap {
   width: 1000px;
-  margin: 10px auto;
-  background: #fff;
+  margin: 20px auto;
   padding: 10px 20px;
   box-sizing: border-box;
   border-radius: 4px;
-  box-shadow: 0 0 10px rgba(150, 150, 150, .1);
 }
 </style>

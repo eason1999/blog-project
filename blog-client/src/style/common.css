@@ -54,3 +54,9 @@ html, body {
 .cur {
   cursor: pointer;
 }
+.box-shadow {
+  box-shadow: 0 0 10px rgba(150, 150, 150, .1);
+}
+.bg-color {
+  background: #fff;
+}

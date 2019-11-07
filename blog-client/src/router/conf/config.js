@@ -1,6 +1,6 @@
 export const routeConfig = [
   {
-    path: '/home/:id',
+    path: '/home/:type',
     name: 'home',
     meta: {
       title: '首页'
