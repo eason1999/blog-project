@@ -17,16 +17,22 @@
         </MenuItem>
       </div>
       <div class="login-wrap fr">
-        <div class="unlogin-contain" v-if="false">
-          <a class="login" href="javascript:;">登录</a>
+        <Button
+          class="btn"
+          type="default"
+          ghost>写文章</Button>
+        <div class="unlogin-contain" v-if="true">
+          <a
+            class="login"
+            href="javascript:;"
+            @click="handleLogin">登录</a>
           <span class="spin"> · </span>
-          <a class="login" href="javascript:;">注册</a>
+          <a
+            class="login"
+            href="javascript:;"
+            @click="handleRegister">注册</a>
         </div>
-        <div class="login-contain">
-          <Button
-            class="btn"
-            type="default"
-            ghost>写文章</Button>
+        <div class="login-contain" v-else>
           <Badge
             class="notice-badge cur"
             :count="12"
@@ -49,6 +55,37 @@
           size="large"/>
       </div>
     </div>
+    <Modal
+      title="登录"
+      :closable="false"
+      :footer-hide="true"
+      v-model="isShowModal"
+      :mask-closable="false"
+      :on-cancel="handleCancel"
+      width="400">
+      <Form ref="form" :model="form" :rules="rules">
+        <FormItem prop="user">
+          <Input type="text"
+            v-model="form.user"
+            placeholder="用户名">
+            <Icon type="ios-person-outline" slot="prepend"></Icon>
+          </Input>
+        </FormItem>
+        <FormItem prop="password">
+          <Input type="password"
+            v-model="form.password"
+            placeholder="密码">
+            <Icon type="ios-lock-outline" slot="prepend"></Icon>
+          </Input>
+        </FormItem>
+        <FormItem>
+          <div class="footer">
+            <Button type="default" @click="handleCancel">取消</Button>
+            <Button type="primary" @click="handleSubmit('form')">登录</Button>
+          </div>
+        </FormItem>
+      </Form>
+    </Modal>
   </div>
 </template>
 
@@ -60,7 +97,10 @@ import {
   Avatar,
   Badge,
   Input,
-  Button
+  Button,
+  Modal,
+  Form,
+  FormItem
 } from 'view-design'
 
 export default {
@@ -72,12 +112,42 @@ export default {
     Avatar,
     Badge,
     Input,
-    Button
+    Button,
+    Modal,
+    Form,
+    FormItem
   },
   data() {
     return {
+      isShowModal: false,
       offset: [25, 45],
-      activeName: this.$route.params.type || 'new'
+      activeName: this.$route.params.type || 'new',
+      form: {
+        user: '',
+        passward: ''
+      },
+      rules: {
+        user: [
+          {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'change'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'change'
+          },
+          {
+            type: 'string',
+            min: 6,
+            message: '密码长度不少于6位',
+            trigger: 'change'
+          }
+        ]
+      }
     }
   },
   computed: {
@@ -88,6 +158,26 @@ export default {
   },
   mounted() {
     console.log(this.$route)
+  },
+  methods: {
+    handleLogin() {
+      this.isShowModal = true
+    },
+    handleRegister() {},
+    handleCancel() {
+      this.isShowModal = false
+      this.$refs['form'].resetFields()
+    },
+    handleSubmit(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.isShowModal = false
+          this.$Message.success('登录成功!')
+        } else {
+          this.$Message.error('登陆失败!')
+        }
+      })
+    }
   }
 }
 </script>
@@ -99,7 +189,7 @@ export default {
     height: 80px;
     line-height: 80px;
   }
-  .layout-logo{
+  .layout-logo {
     width: 100px;
     height: 30px;
     background: #5b6270;
@@ -108,13 +198,18 @@ export default {
     top: 25px;
     left: 40px;
   }
-  .layout-nav{
+  .layout-nav {
     width: 420px;
     margin: 0 auto;
     margin-left: 40px;
   }
   .login-wrap {
+    display: flex;
+    align-items: center;
     margin-right: 40px;
+    .btn {
+      margin-right: 60px;
+    }
     .unlogin-contain {
       .login {
         font-size: 14px;
@@ -122,13 +217,10 @@ export default {
       }
       .spin {
         font-size: 24px;
+        color: #fff;
       }
     }
     .login-contain {
-      .btn {
-        position: relative;
-        right: 60px;
-      }
       .notice-badge {
         .icon {
           position: relative;
@@ -154,6 +246,12 @@ export default {
       font-size: 16px;
       margin-bottom: 20px;
     }
+  }
+}
+.footer {
+  text-align: right;
+  button:first-child {
+    margin-right: 20px;
   }
 }
 </style>

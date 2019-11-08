@@ -65,7 +65,8 @@ import BlogHeader from '@/components/BlogHeader'
 export default {
   data() {
     return {
-      isShowPublic: false
+      isShowPublic: false,
+      isTrue: true
     }
   },
   components: {
@@ -77,6 +78,10 @@ export default {
   },
   methods: {
     handleFocus() {
+      // if (this.isTrue) {
+      //   this.$refs.commentIpt.blur()
+      //   return false
+      // }
       this.isShowPublic = true
       // this.$refs.commentIpt.blur()
     },

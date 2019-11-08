@@ -1,86 +1,91 @@
 <template>
   <div class="create-wrap">
     <div class="top-wrap">
-      <div class="title">title</div>
-      <div class="user-info"></div>
+      <input type="text" autofocus placeholder="输入文章标题..." spellcheck="false" maxlength="80" class="title-input" />
+      <div class="user-info">
+        <Button class="btn" type="primary">发布</Button>
+        <Avatar class="cur" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+      </div>
     </div>
     <div class="edit-wrap">
-      <textarea class="md-box" name="field" id="mdBox" cols="30" rows="10"></textarea>
+      <mavon-editor
+        class="edit-box"
+        :boxShadow="false"
+        :autofocus="false"
+        ref='md'
+        @imgAdd="handleImgAdd"
+        @change="handleChange"
+        previewBackground="#fff"/>
     </div>
-    <div v-html="demoVal"></div>
   </div>
 </template>
 
 <script>
-import SimpleMDE from 'simplemde'
+import {
+  Button,
+  Avatar
+} from 'view-design'
+import { mavonEditor } from 'mavon-editor'
 
 export default {
   data() {
     return {
-      simplemde: null,
-      demoVal: null
+      mavonVal: null
     }
   },
-  components: {},
+  components: {
+    Button,
+    Avatar,
+    mavonEditor
+  },
   computed: {},
   mounted() {
-    this.$nextTick(() => {
-      this.simpleMDEInit()
-    })
   },
   methods: {
-    simpleMDEInit() {
-      const element = document.getElementById('mdBox')
-
-      this.simplemde = new SimpleMDE({
-        element,
-        spellChecker: false,
-        autofocus: true,
-        autoDownloadFontAwesome: false,
-        placeholder: "Type here...",
-        autosave: {
-          enabled: true,
-          uniqueId: "MyUniqueID",
-          delay: 1000,
-        },
-        toolbar: ["bold", "|", "italic", "|", "strikethrough", "|", "heading", "|", "heading-1", "|", "heading-2", "|", "heading-3", "|", "code", "|", "unordered-list", "|", "ordered-list", "|", "clean-block", "|", "link", "|", "image", "|", "table", "|", "side-by-side", "|", "fullscreen"],
-        previewRender: (plainText, preview) => {
-          // Async method
-          setTimeout(() => {
-            preview.innerHTML = this.customMarkdownParser(plainText)
-          }, 250)
-
-          return "Loading..."
-        },
-        tabSize: 4,
-        status: false,
-        lineWrapping: false,
-        renderingConfig: {
-          codeSyntaxHighlighting: false
-        },
-      })
-      this.simplemde.codemirror.on("change", () => {
-        console.log(this.simplemde.markdown(this.simplemde.value()), 435)
-      })
-      this.simplemde.isPreviewActive()
-      this.simplemde.isSideBySideActive()
-      this.simplemde.isFullscreenActive()
-      this.simplemde.clearAutosavedValue()
-      this.simplemde.toggleSideBySide()
+    handleChange(val, render) {
+      console.log(render, 888)
     },
-    customMarkdownParser(val) {
-      this.demoVal = this.simplemde.markdown(val)
-      return this.simplemde.markdown(val)
-    }
+    handleImgAdd(pos, $file) {}
   },
 }
 </script>
 
 <style lang="less">
 .create-wrap {
+  height: 100%;
+  .top-wrap {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    padding: 0 20px;
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+    .title-input {
+      width: 70%;
+      line-height: 80px;
+      border: none;
+      outline: none;
+      font-size: 28px;
+      font-weight: 700;
+      color: #000;
+      background: none;
+    }
+    .user-info {
+      .btn {
+        margin-right: 20px;
+      }
+      .cur {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  }
   .edit-wrap {
-    .CodeMirror {
-      min-height: 600px;
+    width: 100%;
+    height: 100%;
+    .edit-box {
+      height: 100%;
     }
   }
 }

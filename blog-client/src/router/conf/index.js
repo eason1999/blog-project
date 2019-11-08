@@ -18,7 +18,14 @@ const _routes = handleRoutes(routeConfig)
 const routes = [
   {
     path: '/',
-    redirect: 'home',
+    redirect: '/home/new',
+    meta: {
+      title: '首页'
+    }
+  },
+  {
+    path: '/home',
+    redirect: '/home/new',
     meta: {
       title: '首页'
     }

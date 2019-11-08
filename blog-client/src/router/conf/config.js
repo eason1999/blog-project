@@ -18,7 +18,7 @@ export const routeConfig = [
       title: '写博客'
     }
   }, {
-    path: '/404',
+    path: '*',
     name: '404',
     meta: {
       title: '页面不存在'
