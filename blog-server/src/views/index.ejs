@@ -7,5 +7,16 @@
   <body>
     <h1><%= title %></h1>
     <p>EJS Welcome to <%= title %></p>
+    <p><%= message %></p>
+    <!-- locals防止没有该变量时报错 -->
+    <p><%= locals.name %></p>
+    <!--组件引入-->
+    <%- include('widgets/user-info', {
+      isMe
+    })%>
+    <!--循环-->
+    <%- include('widgets/blog-list', {
+      blogList
+    })%>
   </body>
 </html>
