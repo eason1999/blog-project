@@ -10,10 +10,16 @@ const redisStore = require('koa-redis')
 
 const { REDIS_CONF } = require('./conf/db')
 
+// 路由
 const index = require('./routes/index')
 const users = require('./routes/users')
+const errorViewRouter = require('./routes/view/error')
 
-// error handler
+// error handler 后端接口错误导向ejs错误页面
+// const onErrorConf = {
+//   redirect: '/error'
+// }
+// onerror(app, onErrorConf)
 onerror(app)
 
 // middlewares
@@ -50,17 +56,10 @@ app.use(session({
   })
 }))
 
-// logger
-// app.use(async (ctx, next) => {
-//   const start = new Date()
-//   await next()
-//   const ms = new Date() - start
-//   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-// })
-
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods()) // 含兜底路由，需注册最底部
 
 // error-handling
 app.on('error', (err, ctx) => {
