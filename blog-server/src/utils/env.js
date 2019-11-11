@@ -6,5 +6,6 @@ const ENV = process.env.NODE_ENV
 
 module.exports = {
   isDev: ENV === 'dev',
-  isPro: ENV === 'production'
+  isPro: ENV === 'production',
+  isTest: ENV === 'test'
 }
