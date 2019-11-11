@@ -26,7 +26,6 @@ function set (key, val, timeout = _timeout) {
 }
 
 /**
- * 
  * @param {string} key 
  */
 function get (key) {
