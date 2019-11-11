@@ -7,8 +7,10 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
+const jwtKoa = require('koa-jwt')
 
 const { REDIS_CONF } = require('./conf/db')
+const { JWT_SECRET } = require('./utils/constant')
 
 // 路由
 const index = require('./routes/index')
@@ -21,6 +23,13 @@ const errorViewRouter = require('./routes/view/error')
 // }
 // onerror(app, onErrorConf)
 onerror(app)
+
+// jwt注册 json web token
+app.use(jwtKoa({
+  secret: JWT_SECRET, // 密钥--常量
+}).unless({
+  path: [/^\/users\/login/] // 不需要做jwt认证的路由
+}))
 
 // middlewares
 // 解析post参数数据
