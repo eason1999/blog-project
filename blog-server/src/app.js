@@ -41,7 +41,7 @@ app.use(session({
   prefix: 'weibo:sess:', // redis key 前缀 默认为‘koa:sess:’
   cookie: {
     path: '/', // cookie 在所有目录都可访问
-    httpOnly: true, // cookie 值只可服务端更改，客户端不可更改
+    httpOnly: true, // cookie 值只可服务端更改，客户端不可更改cookie值
     maxAge: 1 * 60 * 60 * 1000, // cookie 过期时间
   },
   // ttl: 1 * 60 * 60 * 1000, // redis 过期时间，不写默认与cookie过期时间同步
