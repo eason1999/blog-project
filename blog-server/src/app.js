@@ -12,10 +12,14 @@ const jwtKoa = require('koa-jwt')
 const { REDIS_CONF } = require('./conf/db')
 const { JWT_SECRET } = require('./utils/constant')
 
-// 路由
-const index = require('./routes/index')
-const users = require('./routes/users')
-const errorViewRouter = require('./routes/view/error')
+const { handleRoute } = require('./utils/util')
+
+// 路由注册
+const {
+  index,
+  usersDemo,
+  errorViewRouter
+} = require('./conf/route')
 
 // error handler 后端接口错误导向ejs错误页面
 // const onErrorConf = {
@@ -28,7 +32,7 @@ onerror(app)
 app.use(jwtKoa({
   secret: JWT_SECRET, // 密钥--常量
 }).unless({
-  path: [/^\/users\/login/] // 不需要做jwt认证的路由
+  path: [/^\/users\/login/, /^\//] // 不需要做jwt认证的路由
 }))
 
 // middlewares
@@ -67,7 +71,7 @@ app.use(session({
 
 // routes
 app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
+app.use(usersDemo.routes(), usersDemo.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods()) // 含兜底路由，需注册最底部
 
 // error-handling
