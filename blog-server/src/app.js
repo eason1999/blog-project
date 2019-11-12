@@ -18,6 +18,7 @@ const { handleRoute } = require('./utils/util')
 const {
   index,
   usersDemo,
+  user,
   errorViewRouter
 } = require('./conf/route')
 
@@ -32,7 +33,7 @@ onerror(app)
 app.use(jwtKoa({
   secret: JWT_SECRET, // 密钥--常量
 }).unless({
-  path: [/^\/users\/login/, /^\//] // 不需要做jwt认证的路由
+  path: [/^\/users\/login/, /^\//, /^\/api\/user\/isExist/] // 不需要做jwt认证的路由
 }))
 
 // middlewares
@@ -72,6 +73,7 @@ app.use(session({
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(usersDemo.routes(), usersDemo.allowedMethods())
+app.use(user.routes(), user.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods()) // 含兜底路由，需注册最底部
 
 // error-handling

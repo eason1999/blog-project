@@ -4,7 +4,7 @@
 
 // 同步model到数据库
 const seq = require('./seq')
-// require('./model')
+require('./model')
 
 // 测试链接
 // seq.authenticate().then(() => {
