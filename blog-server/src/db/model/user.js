@@ -12,10 +12,10 @@ const User = seq.define('user', {
     unique: true, // 用户名唯一不重复
     comment: '用户名'
   },
-  nickName: {
+  telephone: {
     type: STRING,
     allowNull: false,
-    comment: '昵称'
+    comment: '手机'
   },
   password: {
     type: STRING,
@@ -31,11 +31,7 @@ const User = seq.define('user', {
   avatar: {
     type: STRING,
     comment: '头像'
-  },
-  city: {
-    type: STRING,
-    comment: '城市'
-  },
+  }
 })
 
 module.exports = User

@@ -7,7 +7,7 @@ const { CODE_ENUM } = require('../utils/constant')
 * 基础模型
 */
 class BaseModel {
-  constructor(code, data, msg) {
+  constructor({ code, data, msg }) {
     this.code = code
     if (data) {
       this.data = data
@@ -34,7 +34,7 @@ class SuccessResultModel extends BaseModel {
  * 失败返回模型
  */
 class FailResultModel extends BaseModel {
-  constructor(code, msg) {
+  constructor({ code, msg }) {
     super({
       code,
       msg

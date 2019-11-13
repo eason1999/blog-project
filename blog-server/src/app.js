@@ -10,7 +10,7 @@ const redisStore = require('koa-redis')
 const jwtKoa = require('koa-jwt')
 
 const { REDIS_CONF } = require('./conf/db')
-const { JWT_SECRET } = require('./utils/constant')
+const { JWT_SECRET, SESSION_SECRET } = require('./utils/constant')
 
 const { handleRoute } = require('./utils/util')
 
@@ -33,7 +33,7 @@ onerror(app)
 app.use(jwtKoa({
   secret: JWT_SECRET, // 密钥--常量
 }).unless({
-  path: [/^\/users\/login/, /^\//, /^\/api\/user\/isExist/] // 不需要做jwt认证的路由
+  path: [/^\/api\/user\/login/, /^\//, /^\/api\/user\/isExist/, /^\/api\/user\/register/] // 不需要做jwt认证的路由
 }))
 
 // middlewares
@@ -54,7 +54,7 @@ app.use(views(__dirname + '/views', {
 
 // session 配置
 // 加密参数
-app.keys = ['ASD_dsfd_123*&324_%$^']
+app.keys = [SESSION_SECRET]
 // 每次用户登录创建一个名为weibo.sid 的cookie
 app.use(session({
   key: 'weibo.sid', // cookie name 默认为‘koa.sid’

@@ -1,4 +1,6 @@
 const JWT_SECRET = '@a#bD_S%DF_12+&45-7&*'
+const CRYP_SECRET = 'sdf_$%_SD*&_F@S'
+const SESSION_SECRET = 'ASD_dsfd_123*&324_%$^'
 const INIT_AVATAR = 'http://dwz.cn/rnTnftz'
 
 // code 枚举常量
@@ -19,10 +21,16 @@ const CODE_ENUM = {
     code: 1001,
     msg: '用户已存在'
   }, // 用户已存在
+  DATA_ERROR: {
+    code: 1002,
+    msg: '数据格式校验失败'
+  },
 }
 
 module.exports = {
   JWT_SECRET,
   INIT_AVATAR,
-  CODE_ENUM
+  CODE_ENUM,
+  CRYP_SECRET,
+  SESSION_SECRET
 }
