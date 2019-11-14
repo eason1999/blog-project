@@ -1,3 +1,4 @@
+const path = require('path')
 const Koa = require('koa')
 const app = new Koa()
 const views = require('koa-views')
@@ -8,6 +9,7 @@ const logger = require('koa-logger')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
 const jwtKoa = require('koa-jwt')
+const koaStatic = require('koa-static')
 
 const { REDIS_CONF } = require('./conf/db')
 const { JWT_SECRET, SESSION_SECRET } = require('./utils/constant')
@@ -19,6 +21,7 @@ const {
   index,
   usersDemo,
   user,
+  utils,
   errorViewRouter
 } = require('./conf/route')
 
@@ -33,7 +36,7 @@ onerror(app)
 app.use(jwtKoa({
   secret: JWT_SECRET, // 密钥--常量
 }).unless({
-  path: [/^\/api\/user\/login/, /^\//, /^\/api\/user\/isExist/, /^\/api\/user\/register/] // 不需要做jwt认证的路由
+  path: [/^\/api\/user\/login/, /^\//, /^\/api\/user\/changePsd/, /^\/api\/user\/register/] // 不需要做jwt认证的路由
 }))
 
 // middlewares
@@ -45,7 +48,9 @@ app.use(json())
 
 app.use(logger())
 // 静态资源路由目录访问
-app.use(require('koa-static')(__dirname + '/public'))
+app.use(koaStatic(path.join(__dirname, '/public')))
+
+app.use(koaStatic(path.join(__dirname, '/uploadFiles')))
 
 // ejs模板注册
 app.use(views(__dirname + '/views', {
@@ -55,10 +60,10 @@ app.use(views(__dirname + '/views', {
 // session 配置
 // 加密参数
 app.keys = [SESSION_SECRET]
-// 每次用户登录创建一个名为weibo.sid 的cookie
+// 每次用户登录创建一个名为blog.sid 的cookie
 app.use(session({
-  key: 'weibo.sid', // cookie name 默认为‘koa.sid’
-  prefix: 'weibo:sess:', // redis key 前缀 默认为‘koa:sess:’
+  key: 'blog.sid', // cookie name 默认为‘koa.sid’
+  prefix: 'blog:sess:', // redis key 前缀 默认为‘koa:sess:’
   cookie: {
     path: '/', // cookie 在所有目录都可访问
     httpOnly: true, // cookie 值只可服务端更改，客户端不可更改cookie值
@@ -74,6 +79,7 @@ app.use(session({
 app.use(index.routes(), index.allowedMethods())
 app.use(usersDemo.routes(), usersDemo.allowedMethods())
 app.use(user.routes(), user.allowedMethods())
+app.use(utils.routes(), utils.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods()) // 含兜底路由，需注册最底部
 
 // error-handling

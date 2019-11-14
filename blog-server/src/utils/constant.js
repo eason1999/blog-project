@@ -25,6 +25,22 @@ const CODE_ENUM = {
     code: 1002,
     msg: '数据格式校验失败'
   },
+  UN_LOGIN: {
+    code: 1003,
+    msg: '您还没有登录'
+  },
+  FILE_SIZE_BIG: {
+    code: 1004,
+    msg: '文件尺寸过大'
+  },
+  FAIL_UPDATE_INFO: {
+    code: 1005,
+    msg: '信息更新失败'
+  },
+  FAIL_UPDATE_PSD: {
+    code: 1006,
+    msg: '密码修改失败'
+  },
 }
 
 module.exports = {

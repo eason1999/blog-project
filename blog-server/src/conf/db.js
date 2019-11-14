@@ -13,7 +13,7 @@ let MYSQL_CONF = {
   user:'root',
   password: '123456',
   port: '3306',
-  database: 'koa2_weibo_db',
+  database: 'koa2_blog_db',
   dialect: 'mysql' // 数据库类型
 }
 
@@ -28,7 +28,7 @@ if (isPro) {
     user:'root',
     password: '123456',
     port: '3306',
-    database: 'koa2_weibo_db',
+    database: 'koa2_blog_db',
     dialect: 'mysql' // 数据库类型
   }
 }

@@ -22,7 +22,6 @@ async function getUserInfo({ userName, password }) {
     attributes: ['userName', 'telephone', 'avatar', 'gender'],
     where: whereObj
   })
-
   if (result === null) {
     return result
   }
@@ -35,7 +34,7 @@ async function getUserInfo({ userName, password }) {
  * 数据处理
  * @param {string} userName 
  * @param {string} password 
- * @param {string} rePass 
+ * @param {string} avatar 
  * @param {string} telephone 
  * @param {number} gender (0 女 1 男 2 保密) 
  */
@@ -50,7 +49,64 @@ async function createUser({ userName, password, telephone, gender = 3, avatar })
   return result.dataValues
 }
 
+/**
+ * 删除用户
+ * @param {string} userName 
+ */
+async function deleteUser(userName) {
+  const result = await User.destroy({
+    ehere: {
+      userName
+    }
+  })
+  return result > 0
+}
+
+/**
+ * 更新信息
+ * @param {object} param0 修改的信息
+ * @param {object} param1 查询条件
+ */
+async function updateUser({
+  newUserName,
+  newGender,
+  newAvatar,
+  newTelephone,
+  newPassword
+}, { userName, password }) {
+  // 修改obj
+  let updateData = {}
+  if (newUserName) {
+    updateData.userName = newUserName
+  }
+  if (newGender) {
+    updateData.gender = newGender
+  }
+  if (newTelephone) {
+    updateData.telephone = newTelephone
+  }
+  if (newAvatar) {
+    updateData.avatar = newAvatar
+  }
+  if (newPassword) {
+    updateData.password = newPassword
+  }
+  // 查询obj
+  let whereData = {
+    userName
+  }
+  if (password) {
+    whereData.password = password
+  }
+  const result = await User.update(updateData, {
+    where: whereData 
+  })
+  return result[0] > -1
+}
+
 module.exports = {
   getUserInfo,
-  createUser
+  createUser,
+  deleteUser,
+  updateUser
 }

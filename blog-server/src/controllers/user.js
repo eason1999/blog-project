@@ -1,7 +1,11 @@
 /**
  * @description user controller
  */
-const { getUserInfo, createUser } = require('../services/user')
+const {
+  getUserInfo,
+  createUser,
+  updateUser
+} = require('../services/user')
 const { SuccessResultModel, FailResultModel } = require('../model/ResultModel')
 const { CODE_ENUM } = require('../utils/constant')
 const doCrypto = require('../utils/cryp')
@@ -23,13 +27,12 @@ async function isExist(userName) {
  * 处理注册逻辑
  * @param {string} userName 
  * @param {string} password 
- * @param {string} rePass 
+ * @param {string} newPassword 
  * @param {string} telephone 
  * @param {number} gender (0 女 1 男 2 保密) 
  */
-async function register({ userName, password, rePass, telephone, gender, avatar }) {
-
-  const userInfo = await getUserInfo(userName)
+async function register({ userName, password, newPassword, telephone, gender, avatar }) {
+  const userInfo = await getUserInfo({ userName })
   if (userInfo) {
     return new FailResultModel(CODE_ENUM.EXIST_USER)
   }
@@ -71,8 +74,73 @@ async function login({ ctx, userName, password }) {
   return new SuccessResultModel()
 }
 
+/**
+ * 修改信息
+ * @param {object} ctx 
+ * @param {object} param1 修改参数
+ */
+async function changeInfo(ctx, {
+  newUserName,
+  newGender,
+  newAvatar,
+  newTelephone
+}) {
+  const { userName } = ctx.session.userInfo
+  const result = await updateUser({
+    newUserName,
+    newGender,
+    newAvatar,
+    newTelephone
+  }, {
+    userName
+  })
+
+  if (result) {
+    // 更新session info
+    Object.assign(ctx.session.userInfo, {
+      newUserName,
+      newGender,
+      newAvatar,
+      newTelephone
+    })
+    return new SuccessResultModel(CODE_ENUM.SUCCESS)
+  }
+  return new FailResultModel(CODE_ENUM.FAIL_UPDATE_INFO)
+}
+
+/**
+ * 修改密码
+ * @param {string} userName
+ * @param {string} password
+ * @param {string} newPassword 
+ */
+async function changePsd({ userName, password, newPassword }) {
+  const result = await updateUser({
+    newPassword: doCrypto(newPassword)
+  }, {
+    userName,
+    password: doCrypto(password)
+  })
+  if (result) {
+    return new SuccessResultModel()
+  }
+  return new FailResultModel(CODE_ENUM.FAIL_UPDATE_PSD)
+}
+
+/**
+ * 退出
+ * @param {object} ctx 
+ */
+async function loginout(ctx) {
+  delete ctx.session.userInfo
+  return new SuccessResultModel()
+}
+
 module.exports = {
   isExist,
   register,
-  login
+  login,
+  changeInfo,
+  changePsd,
+  loginout
 }

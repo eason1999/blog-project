@@ -12,6 +12,7 @@ const ajv = new Ajv()
  */
 function validate(schema, data = {}) {
   const valid = ajv.validate(schema, data)
+  console.log(valid, 8888)
   if (!valid) {
     return ajv.errors[0]
   }

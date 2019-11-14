@@ -19,7 +19,7 @@ const SCHEMA = {
       maxLength: 255,
       minLength: 3
     },
-    rePass: {
+    newPassword: {
       type: 'string',
       maxLength: 255,
       minLength: 3
@@ -38,8 +38,7 @@ const SCHEMA = {
       type: 'string',
       maxLength: 255
     }
-  },
-  required: ['userName', 'password', 'rePass', 'telephone', 'gender']
+  }
 }
 
 /**
