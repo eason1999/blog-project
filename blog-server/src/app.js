@@ -22,6 +22,7 @@ const {
   usersDemo,
   user,
   utils,
+  createBlog,
   errorViewRouter
 } = require('./conf/route')
 
@@ -80,6 +81,7 @@ app.use(index.routes(), index.allowedMethods())
 app.use(usersDemo.routes(), usersDemo.allowedMethods())
 app.use(user.routes(), user.allowedMethods())
 app.use(utils.routes(), utils.allowedMethods())
+app.use(createBlog.routes(), createBlog.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods()) // 含兜底路由，需注册最底部
 
 // error-handling

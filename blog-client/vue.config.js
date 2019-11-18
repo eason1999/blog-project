@@ -2,8 +2,8 @@ const path = require('path')
 
 module.exports = {
   devServer: {
-    // host: '192.168.202.110',
-    host: '192.168.31.130',
+    host: '192.168.200.54',
+    // host: '192.168.31.130',
     hot: true,
     disableHostCheck: true,
     proxy: {

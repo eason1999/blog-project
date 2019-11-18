@@ -7,6 +7,7 @@ const index = require('../routes/index')
 const usersDemo = require('../routes/usersDemo')
 const user = require('../routes/api/user')
 const utils = require('../routes/api/utils')
+const createBlog = require('../routes/api/blog')
 const errorViewRouter = require('../routes/view/error')
 
 module.exports = {
@@ -14,5 +15,6 @@ module.exports = {
   usersDemo,
   user,
   utils,
+  createBlog,
   errorViewRouter
 }
