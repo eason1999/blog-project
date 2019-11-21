@@ -43,10 +43,17 @@ const CODE_ENUM = {
   },
 }
 
+const UN_AUTH_ROUTES = [
+  '/',
+  '/api/user/login',
+  '/api/user/register'
+]
+
 module.exports = {
   JWT_SECRET,
   INIT_AVATAR,
   CODE_ENUM,
   CRYP_SECRET,
-  SESSION_SECRET
+  SESSION_SECRET,
+  UN_AUTH_ROUTES
 }

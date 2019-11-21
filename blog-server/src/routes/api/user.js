@@ -13,7 +13,8 @@ const {
 } = require('../../controllers/user')
 const userValidator = require('../../validator/user')
 const { genValidator } = require('../../middlewares/validator')
-const { checkLogin } = require('../../middlewares/loginCheck')
+// const { checkLogin } = require('../../middlewares/loginCheck')
+const verifyToken = require('../../middlewares/checkToken')
 
 router.prefix('/api/user') // 路由前缀
 
@@ -47,7 +48,11 @@ router.post('/login', async (ctx, next) => {
   ctx.body = await login({ ctx, userName, password })
 })
 
-router.post('/changeInfo', checkLogin, genValidator(userValidator), async (ctx, next) => {
+router.post(
+  '/changeInfo',
+  // checkLogin,
+  verifyToken,
+  genValidator(userValidator), async (ctx, next) => {
   const { userName, gender, avatar, telephone } = ctx.request.body
   ctx.body = await changeInfo(ctx, {
     newUserName: userName,
@@ -57,13 +62,13 @@ router.post('/changeInfo', checkLogin, genValidator(userValidator), async (ctx, 
   })
 })
 
-router.post('/changePsd', checkLogin, genValidator(userValidator), async (ctx, next) => {
+router.post('/changePsd', verifyToken, genValidator(userValidator), async (ctx, next) => {
   const { password, newPassword } = ctx.request.body
   const { userName } = ctx.session.userInfo
   ctx.body = await changePsd({ userName, password, newPassword })
 })
 
-router.post('/loginout', checkLogin, async (ctx, next) => {
+router.post('/loginout', verifyToken, async (ctx, next) => {
  ctx.body = await loginout(ctx)
 })
 

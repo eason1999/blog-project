@@ -10,11 +10,13 @@ const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
 const jwtKoa = require('koa-jwt')
 const koaStatic = require('koa-static')
-
+const cors = require('koa2-cors')
 const { REDIS_CONF } = require('./conf/db')
-const { JWT_SECRET, SESSION_SECRET } = require('./utils/constant')
-
-const { handleRoute } = require('./utils/util')
+const {
+  JWT_SECRET,
+  SESSION_SECRET,
+  CODE_ENUM
+} = require('./utils/constant')
 
 // 路由注册
 const {
@@ -33,11 +35,34 @@ const {
 // onerror(app, onErrorConf)
 onerror(app)
 
+// 跨域设置
+app.use(cors({
+  origin: (ctx) => {
+    return '*' // 所有域
+  },
+  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+  maxAge: 5,
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'DELETE'],
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+}))
+
+app.use((ctx, next) => {
+  return next().catch((err) => {
+    if (err.status === 401) {
+      ctx.body = CODE_ENUM.TIMEOUT
+    } else {
+      console.error(err.message)
+      throw err
+    }
+  })
+})
+
 // jwt注册 json web token
 app.use(jwtKoa({
   secret: JWT_SECRET, // 密钥--常量
 }).unless({
-  path: [/^\/api\/user\/login/, /^\//, /^\/api\/user\/changePsd/, /^\/api\/user\/register/] // 不需要做jwt认证的路由
+  path: [/^\/api\/user\/login/, /^\//, /^\/api\/user\/register/] // 不需要做jwt认证的路由
 }))
 
 // middlewares

@@ -15,7 +15,8 @@ const SCHEMA = {
       type: 'string',
       maxLength: 255
     }
-  }
+  },
+  required: ['content']
 }
 
 /**

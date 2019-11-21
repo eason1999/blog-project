@@ -3,14 +3,15 @@
  */
 
 const router = require('koa-router')()
-const { checkLogin } = require('../../middlewares/loginCheck')
+// const { checkLogin } = require('../../middlewares/loginCheck')
+const verifyToken = require('../../middlewares/checkToken')
 const koaForm = require('formidable-upload-koa')
 const { saveFiles } = require('../../controllers/utils')
 
 
 router.prefix('/api/uitls')
 
-router.post('/upload', checkLogin, koaForm(), async (ctx, next) => {
+router.post('/upload', verifyToken, koaForm(), async (ctx, next) => {
   const file = ctx.request.files['file']
   const { path, size, name, type } = file
   ctx.body = await saveFiles({
