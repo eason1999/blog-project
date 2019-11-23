@@ -9,7 +9,8 @@ const {
   login,
   changeInfo,
   changePsd,
-  loginout
+  loginout,
+  getInfo
 } = require('../../controllers/user')
 const userValidator = require('../../validator/user')
 const { genValidator } = require('../../middlewares/validator')
@@ -64,12 +65,15 @@ router.post(
 
 router.post('/changePsd', verifyToken, genValidator(userValidator), async (ctx, next) => {
   const { password, newPassword } = ctx.request.body
-  const { userName } = ctx.session.userInfo
-  ctx.body = await changePsd({ userName, password, newPassword })
+  ctx.body = await changePsd({ password, newPassword })
 })
 
 router.post('/loginout', verifyToken, async (ctx, next) => {
  ctx.body = await loginout(ctx)
+})
+
+router.get('/userInfo', verifyToken, async (ctx, next) => {
+  ctx.body = await getInfo()
 })
 
 module.exports = router

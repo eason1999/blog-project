@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from './config'
+import storage from '@/utils/storage'
 
 const env = process.env.NODE_ENV
 console.log(env)
@@ -16,8 +17,8 @@ const Serve = axios.create({
 Serve.interceptors.request.use((reqConf) => {
   /* eslint no-param-reassign: "error" */
   if (!isMock) {
-    const token = window.$STORE.state.xToken || localStorage.getItem('token') || ''
-    reqConf.headers.common['TOKEN'] = token
+    const token = window.$STORE.state.token || storage.getStorage('token') || ''
+    reqConf.headers.common['Authorization'] = `Bearer ${token}`
   }
   for (let key in reqConf.params) {
     if (reqConf.params[key] === null || reqConf.params[key] === '') {
@@ -38,22 +39,16 @@ Serve.interceptors.response.use((response) => {
   switch (code) {
     case 1:
       return Promise.resolve(response.data.data)
-    case -1:
-      /* eslint-disable */
-      window.location = `${window.location.pathname}#/home`
+    case 1000:
+      storage.removeStorage()
+      window.location = `${window.location.pathname}#/home/new`
       return Promise.reject(response.data)
     default:
-      Message({
-        message: response.data.msg || '请稍候~',
-        type: 'warning'
-      })
+      this.$Message.warning(response.data.msg || '请稍候~')
       return Promise.reject(response.data)
   }
 }, (err) => {
-  Message({
-    message: '请刷新重试~',
-    type: 'warning'
-  })
+  this.$Message.warning('请刷新重试~')
   return Promise.reject(err)
 })
 

@@ -47,7 +47,20 @@ function get (key) {
   return promise
 }
 
+function del (key) {
+  const promise = new Promise((resolve, reject) => {
+    redisClient.del(key, (err, val) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(val)
+    })
+  })
+  return promise
+}
+
 module.exports = {
   set,
-  get
+  get,
+  del
 }

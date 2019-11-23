@@ -1,7 +1,7 @@
 const JWT_SECRET = '@a#bD_S%DF_12+&45-7&*'
 const CRYP_SECRET = 'sdf_$%_SD*&_F@S'
 const SESSION_SECRET = 'ASD_dsfd_123*&324_%$^'
-const INIT_AVATAR = 'http://dwz.cn/rnTnftz'
+const INIT_AVATAR = 'https://i.loli.net/2017/08/21/599a521472424.jpg'
 
 // code 枚举常量
 const CODE_ENUM = {

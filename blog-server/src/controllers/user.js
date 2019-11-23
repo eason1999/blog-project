@@ -10,7 +10,7 @@ const {
 const { SuccessResultModel, FailResultModel } = require('../model/ResultModel')
 const { CODE_ENUM, JWT_SECRET } = require('../utils/constant')
 const doCrypto = require('../utils/cryp')
-const { set, get } = require('../cache/_redis')
+const { set, get, del } = require('../cache/_redis')
 
  /**
   * 用户名是否存在
@@ -36,6 +36,7 @@ async function isExist(userName) {
 async function register({ userName, password, newPassword, telephone, gender, avatar }) {
   // const userInfo = await getUserInfo({ userName })
   const userInfo = await get('userInfo')
+  console.log(userInfo, 'register info')
   if (userInfo) {
     return new FailResultModel(CODE_ENUM.EXIST_USER)
   }
@@ -45,7 +46,7 @@ async function register({ userName, password, newPassword, telephone, gender, av
       userName,
       password: doCrypto(password),
       telephone,
-      gender,
+      gender: gender || 2,
       avatar
     })
     console.log(result, 998877)
@@ -54,7 +55,7 @@ async function register({ userName, password, newPassword, telephone, gender, av
       userId: result.id
     }, JWT_SECRET, { expiresIn: '1h' })
     set('token', token)
-    return new SuccessResultModel()
+    return new SuccessResultModel({ token })
   } catch(err) {
     console.log(err, 988)
     console.error(err.message, err.stack)
@@ -91,7 +92,9 @@ async function login({ ctx, userName, password }) {
     userId: userInfo.id
   }, JWT_SECRET, { expiresIn: '1h' })
   await set('token', token)
-  return new SuccessResultModel({ token })
+  return new SuccessResultModel({
+    token
+  })
 }
 
 /**
@@ -137,7 +140,9 @@ async function changeInfo(ctx, {
  * @param {string} password
  * @param {string} newPassword 
  */
-async function changePsd({ userName, password, newPassword }) {
+async function changePsd({ password, newPassword }) {
+  const userInfo = await get('userInfo')
+  const userName = userInfo.userName
   const result = await updateUser({
     newPassword: doCrypto(newPassword)
   }, {
@@ -155,10 +160,24 @@ async function changePsd({ userName, password, newPassword }) {
  * @param {object} ctx 
  */
 async function loginout(ctx) {
-  delete ctx.session.userInfo
-  await set('token', null)
-  await set('userInfo', null)
+  // delete ctx.session.userInfo
+  // await set('token', null)
+  // await set('userInfo', null)
+  await del('token')
+  await del('userInfo')
   return new SuccessResultModel()
+}
+
+async function getInfo() {
+  const info = await get('userInfo')
+  const userName = info.userName
+  const userInfo = await getUserInfo({
+    userName
+  })
+  if (userInfo) {
+    return new SuccessResultModel({ userInfo })
+  }
+  return new FailResultModel(CODE_ENUM.TIMEOUT)
 }
 
 module.exports = {
@@ -167,5 +186,6 @@ module.exports = {
   login,
   changeInfo,
   changePsd,
-  loginout
+  loginout,
+  getInfo
 }

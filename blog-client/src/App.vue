@@ -13,6 +13,9 @@ export default {
 </script>
 
 <style lang="less">
+#app {
+  position: relative;
+}
 #app, .page-container {
   min-width: 1200px;
   height: 100%;

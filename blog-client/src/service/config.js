@@ -5,7 +5,7 @@
  
 const config = {
   development: {
-    api: '',
+    api: '//localhost:3000',
     static: './'
   },
   test: {

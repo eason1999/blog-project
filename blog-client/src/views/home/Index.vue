@@ -5,7 +5,7 @@
     <div class="home-list-wrap box-shadow bg-color">
       <List item-layout="vertical">
         <ListItem v-for="(item, index) in dataList" :key="index">
-            <ListItemMeta :avatar="item.avatar" :title="item.title" :description="item.description" />
+            <ListItemMeta :avatar="item.avatar" :title="item.title" />
             {{ item.content }}
             <template slot="action">
               <li>
@@ -45,7 +45,7 @@ export default {
           title: 'This is title 1',
           description: 'This is description, this is description, this is description.',
           avatar: 'https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar',
-          content: 'This is the content, this is the content, this is the content, this is the content.'
+          content: 'This is the content, this is the content, this is the content, this is the content.This is the content, this is the content, this is the content, this is the content.This is the content, this is the content, this is the content, this is the content.This is the content, this is the content, this is the content, this is the content.'
         }, {
           title: 'This is title 2',
           description: 'This is description, this is description, this is description.',

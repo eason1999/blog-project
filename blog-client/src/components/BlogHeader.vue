@@ -20,8 +20,8 @@
         <Button
           class="btn"
           type="default"
-          ghost>写文章</Button>
-        <div class="unlogin-contain" v-if="true">
+          @click="jumpTo">写文章</Button>
+        <div class="unlogin-contain" v-if="!userInfo.userName">
           <a
             class="login"
             href="javascript:;"
@@ -42,7 +42,13 @@
               type="md-notifications"
               size="24"/>
           </Badge>
-          <Avatar class="cur" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+          <Dropdown @on-click="handleDropDown">
+            <Avatar class="cur" :src="userInfo.avatar" />
+            <DropdownMenu slot="list">
+              <DropdownItem name="info">修改信息</DropdownItem>
+              <DropdownItem name="out">退出</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </div>
     </Menu>
@@ -64,11 +70,18 @@
       :on-cancel="handleCancel"
       width="400">
       <Form ref="form" :model="form" :rules="rules">
-        <FormItem prop="user">
+        <FormItem prop="userName">
           <Input type="text"
-            v-model="form.user"
+            v-model="form.userName"
             placeholder="用户名">
             <Icon type="ios-person-outline" slot="prepend"></Icon>
+          </Input>
+        </FormItem>
+        <FormItem prop="telephone" v-if="loginType === 'register'">
+          <Input type="text"
+            v-model="form.telephone"
+            placeholder="手机号">
+            <Icon type="ios-call-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
         <FormItem prop="password">
@@ -78,10 +91,17 @@
             <Icon type="ios-lock-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
+        <FormItem prop="newPassword" v-if="loginType === 'register'">
+          <Input type="password"
+            v-model="form.newPassword"
+            placeholder="确认密码">
+            <Icon type="ios-lock-outline" slot="prepend"></Icon>
+          </Input>
+        </FormItem>
         <FormItem>
           <div class="footer">
             <Button type="default" @click="handleCancel">取消</Button>
-            <Button type="primary" @click="handleSubmit('form')">登录</Button>
+            <Button type="primary" @click="handleSubmit('form')">{{loginType === 'register' ? '注册并登录' : '登录'}}</Button>
           </div>
         </FormItem>
       </Form>
@@ -100,8 +120,13 @@ import {
   Button,
   Modal,
   Form,
-  FormItem
+  FormItem,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem
 } from 'view-design'
+import storage from '@/utils/storage'
+import { phone } from '@/utils/validator'
 
 export default {
   name: 'Header',
@@ -115,19 +140,25 @@ export default {
     Button,
     Modal,
     Form,
-    FormItem
+    FormItem,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem
   },
   data() {
     return {
+      loginType: 'login',
       isShowModal: false,
       offset: [25, 45],
       activeName: this.$route.params.type || 'new',
       form: {
-        user: '',
-        passward: ''
+        userName: '',
+        password: '',
+        newPassword: '',
+        telephone: ''
       },
       rules: {
-        user: [
+        userName: [
           {
             required: true,
             message: '请输入用户名',
@@ -139,11 +170,36 @@ export default {
             required: true,
             message: '请输入密码',
             trigger: 'change'
-          },
-          {
+          }, {
             type: 'string',
             min: 6,
             message: '密码长度不少于6位',
+            trigger: 'change'
+          }
+        ],
+        newPassword: [
+          {
+            required: true,
+            message: '请输入确认密码',
+            trigger: 'change'
+          }, {
+            type: 'string',
+            min: 6,
+            message: '密码长度不少于6位',
+            trigger: 'change'
+          }, {
+            validator: this.validateNewPsd,
+            trigger: 'change'
+          }
+        ],
+        telephone: [
+          {
+            required: true,
+            message: '请输入手机号',
+            trigger: 'change'
+          },
+          {
+            validator: phone,
             trigger: 'change'
           }
         ]
@@ -154,28 +210,103 @@ export default {
     isHomePage() {
       const fullPath = this.$route.fullPath
       return fullPath.indexOf('/home') > -1
+    },
+    userInfo() {
+      console.log(this.$store.state.userInfo.userName, 88888)
+      return this.$store.state.userInfo || {}
+    },
+    token() {
+      return storage.getStorage('token') || null
     }
   },
   mounted() {
-    console.log(this.$route)
+    console.log(this.$route, this.token)
+    if (this.token) {
+      this.getUserInfo()
+    }
   },
   methods: {
+    validateNewPsd(rule, val, callback) {
+      if (!val) return callback()
+      if (this.form.password !== val) {
+        callback(new Error('两次手机号不一致'))
+      }
+      callback()
+    },
     handleLogin() {
       this.isShowModal = true
+      this.loginType = 'login'
     },
-    handleRegister() {},
+    jumpTo() {
+      if (this.userInfo.userName) {
+        this.$router.push({ path: '/create' })
+        return
+      }
+      this.isShowModal = true
+    },
+    handleRegister() {
+      this.isShowModal = true
+      this.loginType = 'register'
+    },
     handleCancel() {
       this.isShowModal = false
       this.$refs['form'].resetFields()
     },
+    _loginIn() {
+      const { userName, password } = this.form
+      this.$store.dispatch('handleLogin', { userName, password }).then(() => {
+        this.getUserInfo()
+        this.isShowModal = false
+        this.$Message.success('登录成功!')
+      })
+    },
+    _register() {
+      this.$store.dispatch('handleRegister', this.form).then(() => {
+        this.getUserInfo()
+        this.isShowModal = false
+        this.loginType = 'login'
+        this.$Message.success('注册成功!')
+      })
+    },
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          this.isShowModal = false
-          this.$Message.success('登录成功!')
-        } else {
-          this.$Message.error('登陆失败!')
+          if (this.loginType === 'login') {
+            this._loginIn()
+          } else {
+            this._register()
+          }
         }
+      })
+    },
+    getUserInfo() {
+      this.$store.dispatch('getUserInfo')
+    },
+    handleDropDown(name) {
+      switch (name) {
+        case 'out':
+          this.outConfirm()
+          break
+        case 'info':
+          this.changeInfo()
+          break
+        default:
+          break
+      }
+    },
+    outConfirm() {
+      this.$Modal.confirm({
+        title: '登出确认',
+        content: '确定退出登录么？',
+        onOk: () => {
+          this.loginOut()
+        },
+        onCancel: () => {}
+      })
+    },
+    loginOut() {
+      this.$store.dispatch('loginOut').then(() => {
+        this.$refs['form'].resetFields()
       })
     }
   }

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { Message, Modal } from 'view-design'
 import router from './router'
 import App from './App.vue'
 import store from './store'
@@ -8,6 +9,9 @@ import 'font-awesome/css/font-awesome.min.css'
 import './style/index.less'
 
 Vue.config.productionTip = false
+
+Vue.prototype.$Message = Message
+Vue.prototype.$Modal = Modal
 
 new Vue({
   router,
