@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Message } from 'view-design'
 import config from './config'
 import storage from '@/utils/storage'
 
@@ -44,11 +45,12 @@ Serve.interceptors.response.use((response) => {
       window.location = `${window.location.pathname}#/home/new`
       return Promise.reject(response.data)
     default:
-      this.$Message.warning(response.data.msg || '请稍候~')
+      console.log(Message, 999)
+      Message.warning(response.data.msg)
       return Promise.reject(response.data)
   }
 }, (err) => {
-  this.$Message.warning('请刷新重试~')
+  Message.warning('请刷新重试~')
   return Promise.reject(err)
 })
 

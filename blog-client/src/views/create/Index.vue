@@ -1,10 +1,17 @@
 <template>
   <div class="create-wrap">
     <div class="top-wrap">
-      <input type="text" autofocus placeholder="输入文章标题..." spellcheck="false" maxlength="80" class="title-input" />
+      <input
+        type="text"
+        autofocus
+        placeholder="输入文章标题..."
+        spellcheck="false"
+        maxlength="80"
+        class="title-input"
+        v-model="params.title"/>
       <div class="user-info">
-        <Button class="btn" type="primary">发布</Button>
-        <Avatar class="cur" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+        <Button class="btn" type="primary" @click="doPublish">发布</Button>
+        <Avatar class="cur" :src="userInfo.avatar" />
       </div>
     </div>
     <div class="edit-wrap">
@@ -13,39 +20,78 @@
         :boxShadow="false"
         :autofocus="false"
         ref='md'
+        :imageFilter="imageFilter"
         @imgAdd="handleImgAdd"
+        @imgDel="handleImgDel"
         @change="handleChange"
         previewBackground="#fff"/>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
 <script>
 import {
   Button,
-  Avatar
+  Avatar,
+  Spin
 } from 'view-design'
 import { mavonEditor } from 'mavon-editor'
+import storage from '@/utils/storage'
+import { IMAGE_EMUN } from '@/utils/constant'
 
 export default {
   data() {
     return {
-      mavonVal: null
+      spinShow: false,
+      mavonVal: null,
+      params: {
+        title: '',
+        content: '',
+        image: ''
+      }
     }
   },
   components: {
     Button,
     Avatar,
-    mavonEditor
+    mavonEditor,
+    Spin
   },
-  computed: {},
+  computed: {
+    userInfo() {
+      console.log(storage.getStorage('userInfo'), 9999)
+      return storage.getStorage('userInfo') || this.$store.state.userInfo || {}
+    }
+  },
   mounted() {
   },
   methods: {
-    handleChange(val, render) {
-      console.log(render, 888)
+    imageFilter($file) {
+      return IMAGE_EMUN.indexOf($file.type) > -1
     },
-    handleImgAdd(pos, $file) {}
+    handleChange(val, render) {
+      this.params.content = render
+    },
+    handleImgAdd(pos, $file) {
+      const formData = new FormData()
+      formData.append('file', $file)
+      this.$store.dispatch('uploadImg', formData).then(res => {
+        console.log('返回结果：', res)
+        this.$refs.md.$img2Url(pos, res.absoluteFilePath)
+        this.$refs.md.$imgUpdateByUrl(pos, res.absoluteFilePath)
+      })
+    },
+    handleImgDel(pos) {
+      this.$refs.md.$refs.toolbar_left.$imgDelByFilename(pos)
+    },
+    doPublish() {
+      this.spinShow = true
+      this.$store.dispatch('create/handlePublish', this.params).then(res => {
+        this.spinShow = false
+        this.$router.go(-1)
+      })
+    }
   },
 }
 </script>

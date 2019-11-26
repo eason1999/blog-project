@@ -2,6 +2,7 @@ const JWT_SECRET = '@a#bD_S%DF_12+&45-7&*'
 const CRYP_SECRET = 'sdf_$%_SD*&_F@S'
 const SESSION_SECRET = 'ASD_dsfd_123*&324_%$^'
 const INIT_AVATAR = 'https://i.loli.net/2017/08/21/599a521472424.jpg'
+const INIT_CONTENT_IMAGE = 'https://dev-file.iviewui.com/5wxHCQMUyrauMCGSVEYVxHR5JmvS7DpH/large'
 
 // code 枚举常量
 const CODE_ENUM = {
@@ -55,5 +56,6 @@ module.exports = {
   CODE_ENUM,
   CRYP_SECRET,
   SESSION_SECRET,
-  UN_AUTH_ROUTES
+  UN_AUTH_ROUTES,
+  INIT_CONTENT_IMAGE
 }

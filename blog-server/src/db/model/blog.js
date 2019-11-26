@@ -22,7 +22,19 @@ const Blog = seq.define('Blog', {
   },
   image: {
     type: STRING,
-    comment: '封面图'
+    comment: '封面图',
+  },
+  like: {
+    type: INTEGER,
+    content: '点赞数'
+  },
+  collect: {
+    type: INTEGER,
+    content: '收藏数'
+  },
+  comment: {
+    type: INTEGER,
+    content: '评论数'
   }
 })
 

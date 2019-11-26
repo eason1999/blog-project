@@ -9,10 +9,10 @@ const koaForm = require('formidable-upload-koa')
 const { saveFiles } = require('../../controllers/utils')
 
 
-router.prefix('/api/uitls')
+router.prefix('/api/utils')
 
 router.post('/upload', verifyToken, koaForm(), async (ctx, next) => {
-  const file = ctx.request.files['file']
+  const file = ctx.req.files['file']
   const { path, size, name, type } = file
   ctx.body = await saveFiles({
     filePath: path,

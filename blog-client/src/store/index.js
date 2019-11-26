@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { Get, Post } from '@/service'
 import storage from '@/utils/storage'
+import create from './modules/create'
+import home from './modules/home'
 
 Vue.use(Vuex)
 
@@ -61,9 +63,21 @@ const store = new Vuex.Store({
       } catch (err) {
         return Promise.reject(err)
       }
+    },
+    async uploadImg({ commit }, formData) {
+    const url = '/api/utils/upload'
+    try {
+      const res = await Post(url, formData)
+      return Promise.resolve(res)
+    } catch (err) {
+      return Promise.reject(err)
     }
+  }
   },
-  modules: {}
+  modules: {
+    create,
+    home
+  }
 })
 
 window.$STORE = store

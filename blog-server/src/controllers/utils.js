@@ -24,20 +24,22 @@ fsExtra.pathExists(DIST_FOLDER_PATH).then(exist => {
  * @param {string} filePah
  */
 async function saveFiles({ name, size, type, filePath }) {
+  console.log('进来了么')
   if (size > MAX_FILE_SIZE) {
     await fsExtra.remove(filePath)
     return new FailResultModel(CODE_ENUM.FILE_SIZE_BIG)
   }
   // 线上应是调用文件服务（CDN）api，传递file并获取返回的图片链接url
   // 开发使用本项目移动文件path
-  const fileName = `${new Date()}.${name}` // 防重名
+  const fileName = `${new Date().getTime()}.${name}` // 防重名
   const disFilePath = path.join(DIST_FOLDER_PATH, fileName)
-  await fsExtra.move(filePath, disFilePath)
-
+  console.log(fileName, disFilePath, '---上传成功文件名1---')
+  await fsExtra.move(filePath, disFilePath, err => console.log(err))
   // 返回图片地址信息
   return new SuccessResultModel({
-    filePath: `/${fileName}`
-  })
+    filePath: `/${fileName}`,
+    absoluteFilePath: disFilePath
+  });
 }
 
 module.exports = {

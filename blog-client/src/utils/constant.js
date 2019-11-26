@@ -1,0 +1,1 @@
+export const IMAGE_EMUN = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png']

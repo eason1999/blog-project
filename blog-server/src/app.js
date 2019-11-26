@@ -5,6 +5,7 @@ const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
+// const koaBody = require('koa-body')
 const logger = require('koa-logger')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
@@ -70,6 +71,8 @@ app.use(jwtKoa({
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
+// app.use(koaBody())
+
 app.use(json())
 
 app.use(logger())
