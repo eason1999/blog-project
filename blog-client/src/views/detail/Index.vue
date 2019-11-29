@@ -3,7 +3,10 @@
     <blog-header />
     <div class="detail-wrap">
       <div class="content-wrap box-shadow bg-color">
-        <div class="content"></div>
+        <div>
+          <h1 class="title">{{detail.title}}</h1>
+          <div class="content" v-html="detail.content"></div>
+        </div>
         <div class="comment-wrap">
           <div class="title">评论</div>
           <div class="ipt-box-wrap">
@@ -35,19 +38,19 @@
         <div class="title">关于作者</div>
         <ul class="list">
           <li class="info">
-            <img class="img" src="https://mirror-gold-cdn.xitu.io/168e091d8e00681a260?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1"/>
+            <img class="img" :src="detail.user.avatar"/>
             <div class="info-wrap">
-              <div class="name">我是作者</div>
-              <div class="role">前端开发</div>
+              <div class="name">{{detail.user.userName}}</div>
+              <div class="role">{{userTag[detail.user.tag]}}</div>
             </div>
           </li>
-          <li class="num-wrap">
+          <!-- <li class="num-wrap">
             <Icon class="icon" type="ios-thumbs-up-outline" />
             获得点赞：<span class="num">123</span>
-          </li>
+          </li> -->
           <li class="num-wrap">
             <Icon class="icon" type="ios-eye-outline" />
-            文字被查看：<span class="num">456</span>
+            文章被查看：<span class="num">{{detail.check}}</span>
           </li>
         </ul>
       </div>
@@ -60,13 +63,22 @@ import {
   Icon,
   Button
 } from 'view-design'
+import hljs from 'highlight.js'
 import BlogHeader from '@/components/BlogHeader'
+import { USER_TAG } from '@/utils/constant'
 
 export default {
   data() {
     return {
       isShowPublic: false,
-      isTrue: true
+      isTrue: true,
+      detail: {
+        user: {
+          userName: '',
+          avatar: '',
+          tag: ''
+        }
+      }
     }
   },
   components: {
@@ -75,6 +87,19 @@ export default {
     Button
   },
   computed: {
+    id() {
+      return this.$route.params.id || undefined
+    },
+    userId() {
+      return this.$route.query.userId || undefined
+    },
+    userTag() {
+      return USER_TAG
+    }
+  },
+  mounted() {
+    this.getDetail()
+    hljs.initHighlightingOnLoad()
   },
   methods: {
     handleFocus() {
@@ -87,20 +112,32 @@ export default {
     },
     handleBlur() {
       this.isShowPublic = false
+    },
+    getDetail() {
+      this.$store.commit('updateSpinShow', true)
+      const params = {
+        id: this.id,
+        userId: this.userId
+      }
+      this.$store.dispatch('detail/getDetail', params).then(res => {
+        console.log(res, 999)
+        Object.assign(this.detail, res)
+        this.$store.commit('updateSpinShow', false)
+      })
     }
-  },
-  mounted() {},
+  }
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .detail-wrap {
   width: 1000px;
   margin: 20px auto;
   display: flex;
+  height: auto;
   .author-info {
-    width: 240px;
-    height: 225px;
+    width: 230px;
+    height: 190px;
     border-radius: 4px;
     font-size: 14px;
     .title {
@@ -155,7 +192,28 @@ export default {
     margin-right: 20px;
     padding: 20px 30px;
     box-sizing: border-box;
-    .content {}
+    height: 100%;
+    width: 750px;
+    .title {
+      font-size: 28px;
+      text-align: center;
+      margin: 10px auto 30px;
+    }
+    .content {
+      height: 100%;
+      table {
+        margin: 20px auto;
+        width: 100%;
+        text-align: center;
+        td, th {
+          border: 1px solid #ddd;
+          padding: 5px 15px;
+        }
+      }
+      pre {
+        margin: 20px auto;
+      }
+    }
     .comment-wrap {
       .title {
         font-size: 16px;

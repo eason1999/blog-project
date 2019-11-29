@@ -9,14 +9,19 @@ const SCHEMA = {
   type: 'object',
   properties: {
     content: {
-      type: 'string'
+      type: 'string',
+      minLength: 3
     },
     image: {
       type: 'string',
       maxLength: 255
+    },
+    title: {
+      type: 'string',
+      minLength: 3
     }
   },
-  required: ['content']
+  required: ['content', 'title']
 }
 
 /**

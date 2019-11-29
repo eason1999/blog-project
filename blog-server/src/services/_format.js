@@ -11,6 +11,9 @@ function _formatUserAvatar(obj) {
   if (obj.avatar === null) {
     obj.avatar = INIT_AVATAR
   }
+  if (obj.tag === null) {
+    obj.tag = '1'
+  }
   return obj
 }
 
@@ -23,6 +26,9 @@ function _formatBlog(obj) {
   }
   if (obj.comment === null) {
     obj.comment = 0
+  }
+  if (obj.check === null) {
+    obj.check = 0
   }
   if (!obj.image) {
     obj.image = INIT_CONTENT_IMAGE

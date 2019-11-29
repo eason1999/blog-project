@@ -69,42 +69,44 @@
       :mask-closable="false"
       :on-cancel="handleCancel"
       width="400">
-      <Form ref="form" :model="form" :rules="rules">
-        <FormItem prop="userName">
-          <Input type="text"
-            v-model="form.userName"
-            placeholder="用户名">
-            <Icon type="ios-person-outline" slot="prepend"></Icon>
-          </Input>
-        </FormItem>
-        <FormItem prop="telephone" v-if="loginType === 'register'">
-          <Input type="text"
-            v-model="form.telephone"
-            placeholder="手机号">
-            <Icon type="ios-call-outline" slot="prepend"></Icon>
-          </Input>
-        </FormItem>
-        <FormItem prop="password">
-          <Input type="password"
-            v-model="form.password"
-            placeholder="密码">
-            <Icon type="ios-lock-outline" slot="prepend"></Icon>
-          </Input>
-        </FormItem>
-        <FormItem prop="newPassword" v-if="loginType === 'register'">
-          <Input type="password"
-            v-model="form.newPassword"
-            placeholder="确认密码">
-            <Icon type="ios-lock-outline" slot="prepend"></Icon>
-          </Input>
-        </FormItem>
-        <FormItem>
-          <div class="footer">
-            <Button type="default" @click="handleCancel">取消</Button>
-            <Button type="primary" @click="handleSubmit('form')">{{loginType === 'register' ? '注册并登录' : '登录'}}</Button>
-          </div>
-        </FormItem>
-      </Form>
+      <div @keydown.enter="handleSubmit('form')">
+        <Form ref="form" :model="form" :rules="rules">
+          <FormItem prop="userName">
+            <Input type="text"
+              v-model="form.userName"
+              placeholder="用户名">
+              <Icon type="ios-person-outline" slot="prepend"></Icon>
+            </Input>
+          </FormItem>
+          <FormItem prop="telephone" v-if="loginType === 'register'">
+            <Input type="text"
+              v-model="form.telephone"
+              placeholder="手机号">
+              <Icon type="ios-call-outline" slot="prepend"></Icon>
+            </Input>
+          </FormItem>
+          <FormItem prop="password">
+            <Input type="password"
+              v-model="form.password"
+              placeholder="密码">
+              <Icon type="ios-lock-outline" slot="prepend"></Icon>
+            </Input>
+          </FormItem>
+          <FormItem prop="newPassword" v-if="loginType === 'register'">
+            <Input type="password"
+              v-model="form.newPassword"
+              placeholder="确认密码">
+              <Icon type="ios-lock-outline" slot="prepend"></Icon>
+            </Input>
+          </FormItem>
+          <FormItem>
+            <div class="footer">
+              <Button type="default" @click="handleCancel">取消</Button>
+              <Button type="primary" @click="handleSubmit('form')">{{loginType === 'register' ? '注册' : '登录'}}</Button>
+            </div>
+          </FormItem>
+        </Form>
+      </div>
     </Modal>
   </div>
 </template>
@@ -262,8 +264,7 @@ export default {
     },
     _register() {
       this.$store.dispatch('handleRegister', this.form).then(() => {
-        this.getUserInfo()
-        this.isShowModal = false
+        // this.isShowModal = false
         this.loginType = 'login'
         this.$Message.success('注册成功!')
       })
@@ -313,7 +314,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .header-wrap {
   background: #515a6e;
   .ivu-menu-horizontal {
@@ -365,6 +366,9 @@ export default {
           }
         }
       }
+    }
+    .ivu-avatar {
+      line-height: 28px;
     }
   }
   .home-search {

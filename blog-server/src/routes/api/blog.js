@@ -10,7 +10,8 @@ const verifyToken = require('../../middlewares/checkToken')
 const {
   create,
   getBlogs,
-  getMyBlogs
+  getMyBlogs,
+  getBlogDetail
 } = require('../../controllers/blog')
 
 router.prefix('/api/blog') // 路由前缀
@@ -21,14 +22,23 @@ router.post('/create', verifyToken, genValidator(blogValidator), async (ctx, nex
   ctx.body = await create({ content, image, title })
 })
 
-router.get('/list', verifyToken, async (ctx, next) => {
-  const { pageIndex, pageSize } = ctx.params
-  ctx.body = await getBlogs({ pageIndex, pageSize })
+router.get('/list', async (ctx, next) => {
+  const { pageIndex, pageSize } = ctx.query
+  const _pageIndex = Number(pageIndex)
+  const _pageSize = Number(pageSize)
+  ctx.body = await getBlogs({ _pageIndex, _pageSize })
 })
 
 router.get('/myBlogs', verifyToken, async (ctx, next) => {
-  const { pageIndex, pageSize } = ctx.params
-  ctx.body = await getMyBlogs({ pageIndex, pageSize })
+  const { pageIndex, pageSize } = ctx.query
+  const _pageIndex = Number(pageIndex)
+  const _pageSize = Number(pageSize)
+  ctx.body = await getMyBlogs({ _pageIndex, _pageSize })
+})
+
+router.get('/detail', async (ctx, next) => {
+  const { id, userId } = ctx.query
+  ctx.body = await getBlogDetail({id, userId})
 })
 
 module.exports = router

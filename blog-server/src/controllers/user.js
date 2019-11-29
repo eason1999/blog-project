@@ -33,7 +33,7 @@ async function isExist(userName) {
  * @param {string} telephone 
  * @param {number} gender (0 女 1 男 2 保密) 
  */
-async function register({ userName, password, newPassword, telephone, gender, avatar }) {
+async function register({ userName, password, newPassword, telephone, gender, avatar, tag }) {
   // const userInfo = await getUserInfo({ userName })
   const userInfo = await get('userInfo')
   console.log(userInfo, 'register info')
@@ -42,20 +42,21 @@ async function register({ userName, password, newPassword, telephone, gender, av
   }
   // 注册 service
   try {
-    const result = await createUser({
+    await createUser({
       userName,
       password: doCrypto(password),
       telephone,
       gender: gender || 2,
-      avatar
+      avatar,
+      tag
     })
-    console.log(result, 998877)
-    const token = jwt.sign({
-      userName: result.userName,
-      userId: result.id
-    }, JWT_SECRET, { expiresIn: '1h' })
-    set('token', token)
-    return new SuccessResultModel({ token })
+    // console.log(result, 998877)
+    // const token = jwt.sign({
+    //   userName: result.userName,
+    //   userId: result.id
+    // }, JWT_SECRET, { expiresIn: '1h' })
+    // set('token', token)
+    return new SuccessResultModel()
   } catch(err) {
     console.log(err, 988)
     console.error(err.message, err.stack)
@@ -141,7 +142,7 @@ async function changeInfo(ctx, {
  * @param {string} newPassword 
  */
 async function changePsd({ password, newPassword }) {
-  const userInfo = await get('userInfo')
+  const userInfo = await get('token')
   const userName = userInfo.userName
   const result = await updateUser({
     newPassword: doCrypto(newPassword)

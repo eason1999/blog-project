@@ -26,15 +26,13 @@
         @change="handleChange"
         previewBackground="#fff"/>
     </div>
-    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
 <script>
 import {
   Button,
-  Avatar,
-  Spin
+  Avatar
 } from 'view-design'
 import { mavonEditor } from 'mavon-editor'
 import storage from '@/utils/storage'
@@ -43,7 +41,6 @@ import { IMAGE_EMUN } from '@/utils/constant'
 export default {
   data() {
     return {
-      spinShow: false,
       mavonVal: null,
       params: {
         title: '',
@@ -55,8 +52,7 @@ export default {
   components: {
     Button,
     Avatar,
-    mavonEditor,
-    Spin
+    mavonEditor
   },
   computed: {
     userInfo() {
@@ -71,7 +67,8 @@ export default {
       return IMAGE_EMUN.indexOf($file.type) > -1
     },
     handleChange(val, render) {
-      this.params.content = render
+      console.log(val, render, '-----9999----')
+      this.params.content = String(render)
     },
     handleImgAdd(pos, $file) {
       const formData = new FormData()
@@ -83,13 +80,16 @@ export default {
       })
     },
     handleImgDel(pos) {
-      this.$refs.md.$refs.toolbar_left.$imgDelByFilename(pos)
+      console.log(pos, this.$refs.md.$refs.toolbar_left.$imgDelByFilename, 99999999)
+      // this.$refs.md.$refs.toolbar_left.$imgDelByFilename(pos)
     },
     doPublish() {
-      this.spinShow = true
+      this.$store.commit('updateSpinShow', true)
       this.$store.dispatch('create/handlePublish', this.params).then(res => {
-        this.spinShow = false
-        this.$router.go(-1)
+        this.$store.commit('updateSpinShow', false)
+        this.$router.replace({
+          path: '/home/new'
+        })
       })
     }
   },

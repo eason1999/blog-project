@@ -4,13 +4,15 @@ import { Get, Post } from '@/service'
 import storage from '@/utils/storage'
 import create from './modules/create'
 import home from './modules/home'
+import detail from './modules/detail'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
     token: '',
-    userInfo: {}
+    userInfo: {},
+    spinShow: false
   },
   mutations: {
     updateToken(state, str) {
@@ -20,6 +22,9 @@ const store = new Vuex.Store({
     updateUserInfo(state, obj) {
       state.userInfo = Object.assign({}, obj)
       storage.setStorage('userInfo', obj)
+    },
+    updateSpinShow(state, bool) {
+      state.spinShow = bool || false
     }
   },
   actions: {
@@ -57,8 +62,7 @@ const store = new Vuex.Store({
     async handleRegister({ commit }, params) {
       const url = '/api/user/register'
       try {
-        const res = await Post(url, params)
-        commit('updateToken', res.token)
+        await Post(url, params)
         return Promise.resolve()
       } catch (err) {
         return Promise.reject(err)
@@ -76,7 +80,8 @@ const store = new Vuex.Store({
   },
   modules: {
     create,
-    home
+    home,
+    detail
   }
 })
 

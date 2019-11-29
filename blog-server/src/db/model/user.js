@@ -31,6 +31,10 @@ const User = seq.define('user', {
   avatar: {
     type: STRING,
     comment: '头像'
+  },
+  tag: {
+    type: STRING,
+    content: '标签'
   }
 })
 

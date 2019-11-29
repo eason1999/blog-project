@@ -3,6 +3,8 @@ const CRYP_SECRET = 'sdf_$%_SD*&_F@S'
 const SESSION_SECRET = 'ASD_dsfd_123*&324_%$^'
 const INIT_AVATAR = 'https://i.loli.net/2017/08/21/599a521472424.jpg'
 const INIT_CONTENT_IMAGE = 'https://dev-file.iviewui.com/5wxHCQMUyrauMCGSVEYVxHR5JmvS7DpH/large'
+const LIST_KEY_PREFIX = 'home:blogList:'
+const CHECK_KEY_PREFIX = 'detail:checknum:'
 
 // code 枚举常量
 const CODE_ENUM = {
@@ -57,5 +59,7 @@ module.exports = {
   CRYP_SECRET,
   SESSION_SECRET,
   UN_AUTH_ROUTES,
-  INIT_CONTENT_IMAGE
+  INIT_CONTENT_IMAGE,
+  LIST_KEY_PREFIX,
+  CHECK_KEY_PREFIX
 }

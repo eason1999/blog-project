@@ -19,7 +19,7 @@ async function getUserInfo({ userName, password }) {
     Object.assign(whereObj, { password })
   }
   const result = await User.findOne({
-    attributes: ['userName', 'id', 'telephone', 'avatar', 'gender'],
+    attributes: ['userName', 'id', 'telephone', 'avatar', 'gender', 'tag'],
     where: whereObj
   })
   console.log(result, 999)
@@ -38,14 +38,16 @@ async function getUserInfo({ userName, password }) {
  * @param {string} avatar 
  * @param {string} telephone 
  * @param {number} gender (0 女 1 男 2 保密) 
+ * @param {string} tag (0 开发 1 其他)
  */
-async function createUser({ userName, password, telephone, gender = 3, avatar }) {
+async function createUser({ userName, password, telephone, gender = 3, avatar, tag }) {
   const result = await User.create({
     userName,
     password,
     telephone,
     gender,
-    avatar: avatar ? avatar : INIT_AVATAR
+    avatar: avatar ? avatar : INIT_AVATAR,
+    tag: tag ? tag : '1'
   })
   return result.dataValues
 }

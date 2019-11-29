@@ -7,6 +7,7 @@ import 'view-design/dist/styles/iview.css'
 import 'mavon-editor/dist/css/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import './style/index.less'
+import 'highlight.js/styles/github.css'
 
 Vue.config.productionTip = false
 

@@ -18,6 +18,7 @@ const {
   SESSION_SECRET,
   CODE_ENUM
 } = require('./utils/constant')
+const { updateCheck } = require('./scheduler')
 
 // 路由注册
 const {
@@ -63,7 +64,7 @@ app.use((ctx, next) => {
 app.use(jwtKoa({
   secret: JWT_SECRET, // 密钥--常量
 }).unless({
-  path: [/^\/api\/user\/login/, /^\//, /^\/api\/user\/register/] // 不需要做jwt认证的路由
+  path: [/^\/api\/user\/login/, /^\//, /^\/api\/user\/register/, /^\/api\/blog\/list/, /^\/api\/blog\/detail/] // 不需要做jwt认证的路由
 }))
 
 // middlewares
@@ -85,6 +86,9 @@ app.use(koaStatic(path.join(__dirname, '/uploadFiles')))
 app.use(views(__dirname + '/views', {
   extension: 'ejs'
 }))
+
+// 定时任务
+updateCheck()
 
 // session 配置
 // 加密参数

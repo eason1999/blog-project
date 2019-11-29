@@ -35,6 +35,10 @@ const Blog = seq.define('Blog', {
   comment: {
     type: INTEGER,
     content: '评论数'
+  },
+  check: {
+    type: INTEGER,
+    content: '文章被查看'
   }
 })
 

@@ -5,6 +5,7 @@
 const { Blog, User } = require('../db/model')
 const { formatBlog } = require('./_format')
 const { INIT_CONTENT_IMAGE } = require('../utils/constant')
+// const { getCacheCount } = require('../cache/blog')
 
 /**
  * @description 写博客
@@ -17,7 +18,11 @@ async function createBlog({ content, userId, image, title }) {
     userId,
     title,
     content,
-    image: image ? image : INIT_CONTENT_IMAGE
+    image: image ? image : INIT_CONTENT_IMAGE,
+    like: 0,
+    comment: 0,
+    collect: 0,
+    check: 0
   })
   return result.dataValues
 }
@@ -61,8 +66,35 @@ async function getBlogList({ pageIndex = 1, pageSize = 15, userName = null }) {
   }
 }
 
+/**
+ * 获取博客详情
+ * @param {string} id 
+ */
+async function getDetail({id, userId}) {
+  const whereObj = {
+    id: userId
+  }
+  const result = await Blog.findOne({
+    where: {
+      id
+    },
+    include: [{
+      model: User,
+      attributes: ['userName', 'avatar', 'tag'],
+      where: whereObj
+    }]
+  })
+  if (!result) {
+    return result
+  }
+  const blogInfo = result.dataValues
+  const res = formatBlog([blogInfo])
+  return res[0]
+}
+
 
 module.exports = {
   createBlog,
-  getBlogList
+  getBlogList,
+  getDetail
 }

@@ -26,6 +26,14 @@ function set (key, val, timeout = _timeout) {
 }
 
 /**
+ * 自增
+ * @param {string} key 
+ */
+function incr (key) {
+  redisClient.incr(key)
+}
+
+/**
  * @param {string} key 
  */
 function get (key) {
@@ -59,8 +67,22 @@ function del (key) {
   return promise
 }
 
+function getKeys(prefix) {
+  const promise = new Promise((resolve, reject) => {
+    redisClient.keys(prefix, (err, val) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(val)
+    })
+  })
+  return promise
+}
+
 module.exports = {
   set,
   get,
-  del
+  del,
+  incr,
+  getKeys
 }

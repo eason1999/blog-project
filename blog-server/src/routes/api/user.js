@@ -32,7 +32,8 @@ router.post('/register', genValidator(userValidator), async (ctx, next) => {
     newPassword,
     telephone,
     gender,
-    avatar
+    avatar,
+    tag
   } = ctx.request.body
   ctx.body = await register({
     userName,
@@ -40,7 +41,8 @@ router.post('/register', genValidator(userValidator), async (ctx, next) => {
     newPassword,
     telephone,
     gender,
-    avatar
+    avatar,
+    tag
   })
 })
 

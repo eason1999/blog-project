@@ -9,7 +9,7 @@ const {
   UN_AUTH_ROUTES
 } = require('../utils/constant')
 const verify = util.promisify(jwt.verify)
-const { set, get } = require('../cache/_redis')
+const { set, get, del } = require('../cache/_redis')
 
 /**
  * 校验token
@@ -58,8 +58,11 @@ async function verifyToken(ctx, next) {
       userName: payload.userName,
       userId: payload.userId
     }))
+    await set('token', token, 60 * 60)
     await next()
   } catch (err) {
+    await del('token')
+    await del('userInfo')
     ctx.body = CODE_ENUM.TIMEOUT
     return
   }

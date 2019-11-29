@@ -12,6 +12,7 @@
     "axios": "^0.19.0",
     "core-js": "^3.3.2",
     "font-awesome": "^4.7.0",
+    "highlight.js": "^9.16.2",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "mavon-editor": "^2.7.7",
@@ -42,7 +43,12 @@
     "rules": {
       "no-unused-vars": 0,
       "no-console": 0,
-      "vue/no-parsing-error": [2, { "x-invalid-end-tag": false }]
+      "vue/no-parsing-error": [
+        2,
+        {
+          "x-invalid-end-tag": false
+        }
+      ]
     },
     "parserOptions": {
       "parser": "babel-eslint"
