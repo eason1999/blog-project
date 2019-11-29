@@ -2,7 +2,7 @@
  * @description user service
  */
 
-const { User } = require('../db/model')
+const { User, UserRelation } = require('../db/model')
 const { formatUser } = require('./_format')
 const { INIT_AVATAR } = require('../utils/constant')
 
@@ -58,7 +58,7 @@ async function createUser({ userName, password, telephone, gender = 3, avatar, t
  */
 async function deleteUser(userName) {
   const result = await User.destroy({
-    ehere: {
+    where: {
       userName
     }
   })
@@ -107,9 +107,96 @@ async function updateUser({
   return result[0] > -1
 }
 
+/**
+ * 获取粉丝列表
+ * @param {string} userId 
+ */
+async function getFansUsers({ userId }) {
+  const result = await User.findAndCountAll({
+    attributes: ['id', 'userName', 'avatar'],
+    order: [
+      ['id', 'desc']
+    ],
+    include: [
+      {
+        model: UserRelation,
+        where: {
+          followId: userId
+        }
+      }
+    ]
+  })
+  const userList = result.rows.map(item => item.dataValues)
+  userList = formatUser(userList)
+  return {
+    count: result.count,
+    rows: userList
+  }
+}
+
+/**
+ * 获取关注人列表
+ * @param {string} userId 
+ */
+async function getFollowUsers({ userId }) {
+  const result = await UserRelation.findAndCountAll({
+    where: {
+      userId
+    },
+    order: [
+      ['id', 'desc']
+    ],
+    include: {
+      model: User,
+      attributes: ['id', 'userName', 'avatar']
+    }
+  })
+  const userArr = result.rows.map(item => item.dataValues)
+  userList = userArr.map(item => {
+    item.user = formatUser(item.user.dataValues)
+    return item
+  })
+  return {
+    count: result.count,
+    rows: userList
+  }
+}
+
+/**
+ * 添加关注
+ * @param {string} userId
+ * @param {string} followUserId
+ */
+async function addFollowUser({ userId, followUserId }) {
+  const result = await UserRelation.create({
+    userId,
+    followId: followUserId
+  })
+  return result.dataValues
+}
+
+/**
+ * 取消关注
+ * @param {string} userId
+ * @param {string} followUserId
+ */
+async function delFollowUser({ userId, followUserId }) {
+  const result = await UserRelation.destroy({
+    where: {
+      userId,
+      followId: followUserId
+    }
+  })
+  return result > 0
+}
+
 module.exports = {
   getUserInfo,
   createUser,
   deleteUser,
-  updateUser
+  updateUser,
+  getFansUsers,
+  getFollowUsers,
+  delFollowUser,
+  addFollowUser
 }

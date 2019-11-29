@@ -10,7 +10,11 @@ const {
   changeInfo,
   changePsd,
   loginout,
-  getInfo
+  getInfo,
+  getFans,
+  getFollows,
+  handDelFollow,
+  handAddFollow
 } = require('../../controllers/user')
 const userValidator = require('../../validator/user')
 const { genValidator } = require('../../middlewares/validator')
@@ -46,7 +50,7 @@ router.post('/register', genValidator(userValidator), async (ctx, next) => {
   })
 })
 
-router.post('/login', async (ctx, next) => {
+router.post('/login', genValidator(userValidator), async (ctx, next) => {
   const { userName, password } = ctx.request.body
   ctx.body = await login({ ctx, userName, password })
 })
@@ -76,6 +80,22 @@ router.post('/loginout', verifyToken, async (ctx, next) => {
 
 router.get('/userInfo', verifyToken, async (ctx, next) => {
   ctx.body = await getInfo()
+})
+
+router.get('/fans', verifyToken, async (ctx, next) => {
+  ctx.body = await getFans()
+})
+
+router.get('/follows', verifyToken, async (ctx, next) => {
+  ctx.body = await getFollows()
+})
+
+router.post('/addFollow', verifyToken, async (ctx, next) => {
+  ctx.body = await handAddFollow()
+})
+
+router.post('/delFollow', verifyToken, async (ctx, next) => {
+  ctx.body = await handDelFollow()
 })
 
 module.exports = router

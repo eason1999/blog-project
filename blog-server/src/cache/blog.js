@@ -39,7 +39,7 @@ async function _getCacheCount({ id, userId }) {
 
   if (checkNum === null) {
     const result = await getDetail({ id, userId })
-    await set(checkKey, result.check, 5 * 60)
+    await set(checkKey, result.check, 30 * 60)
   }
   console.log(checkKey, 7777)
   incr(checkKey)

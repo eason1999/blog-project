@@ -5,7 +5,11 @@ const jwt = require('jsonwebtoken')
 const {
   getUserInfo,
   createUser,
-  updateUser
+  updateUser,
+  getFansUsers,
+  getFollowUsers,
+  addFollowUser,
+  delFollowUser
 } = require('../services/user')
 const { SuccessResultModel, FailResultModel } = require('../model/ResultModel')
 const { CODE_ENUM, JWT_SECRET } = require('../utils/constant')
@@ -181,6 +185,72 @@ async function getInfo() {
   return new FailResultModel(CODE_ENUM.TIMEOUT)
 }
 
+/**
+ * 获取粉丝数
+ * @param {string} userId 
+ */
+async function getFans({ userId }) {
+  try {
+    const info = await get('userInfo')
+    const userId = info.id
+    const result = await getFansUsers({ userId })
+    return new SuccessResultModel(result)
+  } catch (err) {
+    console.error(err.message, err.stack)
+    return new FailResultModel(CODE_ENUM.FAIL)
+  }
+}
+
+/**
+ * 获取关注对象
+ * @param {string} userId 
+ */
+async function getFollows({ userId }) {
+  try {
+    const info = await get('userInfo')
+    const userId = info.id
+    const result = await getFollowUsers({ userId })
+    return new SuccessResultModel(result)
+  } catch (err) {
+    console.error(err.message, err.stack)
+    return new FailResultModel(CODE_ENUM.FAIL)
+  }
+}
+/**
+ * 添加关注
+ * @param {string} followUserId 
+ */
+async function handleAddFollow({ followUserId }) {
+  try {
+    const info = await get('userInfo')
+    const userId = info.id
+    const result = await addFollowUser({ userId, followUserId })
+    return new SuccessResultModel(result)
+  } catch (err) {
+    console.error(err.message, err.stack)
+    return new FailResultModel(CODE_ENUM.FAIL)
+  }
+}
+
+/**
+ * 取消关注
+ * @param {string} followUserId 
+ */
+async function handleDelFollow({ followUserId }) {
+  try {
+    const info = await get('userInfo')
+    const userId = info.id
+    const result = await delFollowUser({ userId, followUserId })
+    if (!result) {
+      return new FailResultModel(CODE_ENUM.FAIL)
+    }
+    return new SuccessResultModel(result)
+  } catch (err) {
+    console.error(err.message, err.stack)
+    return new FailResultModel(CODE_ENUM.FAIL)
+  }
+}
+
 module.exports = {
   isExist,
   register,
@@ -188,5 +258,9 @@ module.exports = {
   changeInfo,
   changePsd,
   loginout,
-  getInfo
+  getInfo,
+  getFans,
+  getFollows,
+  handleAddFollow,
+  handleDelFollow
 }
